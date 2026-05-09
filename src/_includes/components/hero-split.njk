@@ -7,18 +7,18 @@
       <h2
             class="text-4xl font-semibold leading-10 tracking-tight {{ heroSettings.headingTextColor or 'text-white' }} sm:text-5xl sm:leading-none md:text-6xl lg:text-5xl xl:text-6xl"
           >
-        {{ heroSettings.headingText | safe }}
+        {{ heroSettings.headingText }}
       </h2>
       <p
             class="max-w-md mx-auto mt-3 text-lg {{ heroSettings.subheadingTextColor }} sm:text-xl md:mt-5 md:max-w-3xl"
           >
-        {{ heroSettings.subheadingText | safe }}
+        {{ heroSettings.subheadingText }}
 
       </p>
 
       {% if heroSettings.buttonText %}
         <div class="w-full mt-12 ">
-          <a href="{{ heroSettings.buttonURL }}" class="p-4 rounded-lg {{ heroSettings.buttonTextColor or colors.buttonCustom.text or colors.buttonDefault.text }} {{ heroSettings.buttonBgColor or colors.buttonCustom.bg or colors.buttonDefault.bg }} hover:{{ colors.buttonCustom.textHover or colors.buttonDefault.textHover }} hover:{{ heroSettings.buttonBgHover or colors.buttonCustom.bgHover or colors.buttonDefault.bgHover }} {{ heroSettings.buttonBorder or colors.buttonCustom.border or colors.buttonDefault.border }}">{{ heroSettings.buttonText }}</a>
+          <a href="{{ heroSettings.buttonURL }}" class="p-4 rounded-lg {{ heroSettings.buttonTextColor or colors.buttonCustom.text or colors.buttonDefault.text }} {{ heroSettings.buttonBgColor or colors.buttonCustom.bg or colors.buttonDefault.bg }} hover:{{ colors.buttonCustom.textHover or colors.buttonDefault.textHover }} hover:{{ heroSettings.buttonBgHover or colors.buttonCustom.bgHover or colors.buttonDefault.bgHover }} {{ heroSettings.buttonBorder or colors.buttonCustom.border or colors.buttonDefault.border }} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black">{{ heroSettings.buttonText }}</a>
         </div>
       {% endif %}
 

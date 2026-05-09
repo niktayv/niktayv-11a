@@ -1,53 +1,55 @@
-# 11TA - 11ty, TailwindCSS, & Alpine.js Template
+# niktayv-11a
 
-> **UPDATE v2.0.0 - Breaking Changes**
-> In order to provide scalability and cleaner frontmatter controls in current Posts _(and upcoming Products)_ collections, the Frontmatter keys were updated which required updates to `/src/_includes/components/*.njk`, `tailwind.config.js`, and other templates.
-> I apologize for the inconvenience.
+Personal Eleventy site for Yuri Vyatkin. The project is a static site deployed to Netlify, with Tailwind CSS for styling and Alpine.js for light client-side interaction.
 
-I set out to build a starter project template for 11ty that has TailwindCSS and Alpine.js baked in.
+## Architecture
 
-Version 1.0.0 morphed into a deeply customizable, full featured, text-based CMS for managing small websites with easy-to-manage configuration files in the `/src/_data/` directory.
+- `src/` contains pages, posts, assets, and all site source content.
+- `src/_data/` contains site metadata, color tokens, and structural configuration consumed by templates.
+- `src/_includes/` contains Nunjucks layouts, partials, and reusable components.
+- `utils/` contains Eleventy filters, shortcodes, paired shortcodes, and transforms registered in `.eleventy.js`.
+- `.eleventy.js` is the build integration point for Eleventy collections, plugins, passthrough copies, markdown configuration, and output behavior.
+- `src/assets/css/tailwind.css` is the Tailwind entrypoint compiled by PostCSS to `dist/assets/tailwind.css`.
+- `src/assets/scripts/main.js` is a lightweight site bootstrap file. Alpine is copied from `node_modules` into the published output by Eleventy; no additional JavaScript bundling is required.
+- Hero heading and subheading values are treated as plain text from frontmatter, not trusted HTML. If you ever need rich markup there, add an explicit sanitization step instead of reintroducing raw `safe` output.
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e6eb38e1-d081-46ea-a4f6-4d3d36ab7036/deploy-status)](https://app.netlify.com/sites/11ta/deploys)
+## Requirements
 
-![Lighthouse Performance](lighthouse/lighthouse_performance.svg) ![Lighthouse Accessibility](lighthouse/lighthouse_accessibility.svg) ![Lighthouse Best Practices](lighthouse/lighthouse_best-practices.svg) ![Lighthouse SEO](lighthouse/lighthouse_seo.svg)
+- Node `24`
+- npm `11` or the npm version that ships with Node 24
 
----
+The repository pins Node through `.node-version`, and Netlify should respect that same runtime during builds.
 
-## Live Demo
+## Development
 
-**The [live demo at "11ta.netlify.app"](https://11ta.netlify.app) provides a feature list, and the evolving blog posts each highlight and provide examples of different features, shortcodes, customizations, and frontmatter controls.**
+Install dependencies:
 
-## :fire: Credit :fire:
+```bash
+npm install
+```
 
-First and foremost, I want to credit the [11ty](https://11ty.dev) community, especially those listed in the [starter projects](https://www.11ty.dev/docs/starter/)!
+Start local development:
 
-Specifically, the following starter projects helped me understand the power and flexibility of 11ty and from their examples I was able to extend the functionality to build this system:
+```bash
+npm run dev
+```
 
-- :fire: [eleventy-base-blog](https://github.com/11ty/eleventy-base-blog) by [Zach Leatherman](https://twitter.com/zachleat)
-- :fire: [eastslopestudio-eleventy-starter](https://github.com/eastslopestudio/eleventy-starter) by [Ryan Scherler](https://twitter.com/ryanscherler)
-- :fire: [eleventyone](https://github.com/philhawksworth/eleventyone) by [Phil Hawksworth](https://twitter.com/philhawksworth)
-- :fire: [eleventy-tailwind-alpinejs-starter](https://github.com/gregwolanski/eleventy-tailwindcss-alpinejs-starter) by [Greg Wolanski](https://gregwolanski.com/)
-- :fire: [jet](https://github.com/marcamos/jet) by [Marc Amos](https://twitter.com/marcamos)
+Create a production build:
 
-## Deploy and Host at Netlify Automatically
+```bash
+npm run build
+```
 
-To automatically deploy this Template to [Netlify for free hosting](https://www.netlify.com/pricing/), make sure you're logged in to your Netlify account and then simply click the <kbd>Deploy to netlify</kbd> button below.
+## Deployment
 
-<a href="https://app.netlify.com/start/deploy?repository=https://github.com/11ta/11ta-template"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify"></a>
+Netlify remains the deployment target.
 
-## Install and Deploy Manually
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Node version: sourced from `.node-version` or a matching `NODE_VERSION` environment variable in Netlify
 
-- Duplicate this repository by clicking <kbd>Use this template</kbd> above
-- Clone the repository locally
-- Run `npm install` to install dependencies
-- `npm run dev` to work locally
+## Maintenance Notes
 
-## Planned
-
-- Search
-- More Structural controls for Index Page
-- Easy add Collections: Projects, Services, Jobs, etc.
-- "Themed" versions for Portfolios/Creatives, Agencies, Digital Gardens, etc.
-- Fully documented migration of Wordpress to 11ty
-- [Snipcart](https://snipcart.com/) integration
+- Tailwind class tokens also live in `src/_data/*.js`, not only in templates, so styling changes should consider both places.
+- Syntax highlighting CSS is kept in `src/assets/css/prism-okaidia.css` and is inlined from the base layout during the Eleventy build.
+- Netlify Forms markup lives in `src/contact.njk`; test it after any contact-form styling or markup changes.

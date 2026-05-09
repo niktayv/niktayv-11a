@@ -1,4 +1,3 @@
-const fs = require('fs');
 const pluginRss = require('@11ty/eleventy-plugin-rss');
 const pluginNavigation = require('@11ty/eleventy-navigation');
 const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
@@ -129,6 +128,12 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/assets/images/');
   eleventyConfig.addPassthroughCopy('src/assets/svg/');
   eleventyConfig.addPassthroughCopy('src/assets/video/');
+  eleventyConfig.addPassthroughCopy({
+    'src/assets/scripts/main.js': 'assets/main.js',
+  });
+  eleventyConfig.addPassthroughCopy({
+    'node_modules/alpinejs/dist/cdn.min.js': 'assets/vendor/alpinejs.js',
+  });
 
   /**
    * Set custom markdown library instance...

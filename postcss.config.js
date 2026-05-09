@@ -1,8 +1,5 @@
 module.exports = {
-  plugins: [
-    require('postcss-import'),
-    require('tailwindcss'),
-    require('autoprefixer'),
-    ...(process.env.NODE_ENV === 'production' ? [require('cssnano')] : []),
-  ],
+  // Tailwind v4's PostCSS plugin handles @import processing and uses
+  // Lightning CSS for vendor prefixing plus production optimization/minification.
+  plugins: [require('@tailwindcss/postcss')],
 };

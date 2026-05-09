@@ -6,6 +6,8 @@
 ---
 {# set absolutePageURL to use later in  canonical and og URLs #}
 {%- set absolutePageUrl -%}{{ page.url | url | absoluteUrl(build.url) }}{%- endset -%}
+{% set newestPostDate = collections.post | getNewestCollectionItemDate %}
+{% set feedUpdatedAt = newestPostDate or build.timestamp %}
 
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -13,7 +15,7 @@
   <subtitle>{{ meta.siteDescription }}</subtitle>
   <link href="{{ meta.siteURL }}"/>
   <link href="{{ absolutePageUrl }}" rel="self"/>
-  <updated>{{ collections.post | rssLastUpdatedDate }}</updated>
+  <updated>{{ feedUpdatedAt | dateToRfc3339 }}</updated>
   <id>{{ meta.siteURL }}</id>
   <author>
     <name>{{ meta.authorName }}</name>
@@ -24,7 +26,7 @@
     <entry>
       <title>{{ post.data.title }}</title>
       <link href="{{ absolutePostUrl }}"/>
-      <updated>{{ post.date | rssDate }}</updated>
+      <updated>{{ post.date | dateToRfc3339 }}</updated>
       <id>{{ absolutePostUrl }}</id>
       <content type="html">{{ post.templateContent | htmlToAbsoluteUrls(absolutePostUrl) }}</content>
     </entry>
