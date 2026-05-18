@@ -1,4 +1,4 @@
-# Custom Local 
+# Custom Local
 project
 _project
 
@@ -108,3 +108,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Lean-CTX
+.lean-ctx
+
