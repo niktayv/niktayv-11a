@@ -53,7 +53,7 @@ Default is set to `object-center` but if your image's focus area is off center, 
 For example, this page's frontmatter currently looks like this:
 
 ```yaml
-# /src/posts/2020-09-06-featured-images.md
+# /doc/posts/examples/2020-09-06-featured-images.md
 title: Featured Post Images
 date: 2020-09-06T17:44:03.000Z
 excerpt: Easily add featured images (heros) just like in Wordpress.
