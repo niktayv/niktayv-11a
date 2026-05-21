@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "niktayv-com",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-05-19",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  },
+  "vars": {
+    "TIMEZONE": "Pacific/Auckland",
+    "URL": "https://niktayv.com"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "env": {
+    "staging": {
+      "name": "niktayv-com-staging",
+      "vars": {
+        "URL": "https://niktayv.com"
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@
     "eleventy",
     "tailwindcss",
     "alpinejs",
-    "netlify",
+    "cloudflare-workers",
     "static-site"
   ],
   "engines": {
@@ -23,7 +23,12 @@
     "dev": "npm run clean && npm run dev:css:once && concurrently \"npm:dev:css\" \"npm:dev:eleventy\"",
     "build:eleventy": "cross-env ELEVENTY_ENV=production eleventy",
     "build:css": "mkdirp dist/assets && cross-env NODE_ENV=production postcss src/assets/css/tailwind.css -o dist/assets/tailwind.css",
-    "build": "npm run clean && npm run build:css && npm run build:eleventy"
+    "build": "npm run clean && npm run build:css && npm run build:eleventy",
+    "cf:check-env": "node scripts/validate-cloudflare-build-env.js",
+    "cf:build": "npm run cf:check-env && npm run build",
+    "cf:dev": "npm run cf:build && wrangler dev",
+    "cf:deploy:staging": "npm run cf:build && wrangler deploy --env staging",
+    "cf:deploy": "npm run cf:build && wrangler deploy"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",
@@ -46,6 +51,7 @@
     "postcss-cli": "^11.0.1",
     "rimraf": "^6.1.3",
     "slugify": "^1.4.6",
-    "tailwindcss": "^4.1.12"
+    "tailwindcss": "^4.1.12",
+    "wrangler": "^4.92.0"
   }
 }

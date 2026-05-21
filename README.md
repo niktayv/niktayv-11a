@@ -1,6 +1,6 @@
 # niktayv-11a
 
-Personal Eleventy site for Yuri Vyatkin. The project is a static site deployed to Netlify, with Tailwind CSS for styling and Alpine.js for light client-side interaction.
+Personal Eleventy site for Yuri Vyatkin. The project is a static site built with Tailwind CSS and Alpine.js, published to Cloudflare Workers Static Assets with a small Worker endpoint for contact-form handling.
 
 ## Architecture
 
@@ -18,7 +18,7 @@ Personal Eleventy site for Yuri Vyatkin. The project is a static site deployed t
 - Node `24`
 - npm `11` or the npm version that ships with Node 24
 
-The repository pins Node through `.node-version`, and Netlify should respect that same runtime during builds.
+The repository pins Node through `.node-version`, and the manual Cloudflare build/deploy flow should use that same runtime during builds.
 
 ## Development
 
@@ -42,14 +42,52 @@ npm run build
 
 ## Deployment
 
-Netlify remains the deployment target.
+Cloudflare Workers is the deployment target.
 
-- Build command: `npm run build`
-- Publish directory: `dist`
-- Node version: sourced from `.node-version` or a matching `NODE_VERSION` environment variable in Netlify
+- Static assets are built into `dist/`.
+- `wrangler.jsonc` points Workers Static Assets at `dist/` and binds the Worker entrypoint at `worker/index.js`.
+- `POST /api/contact` is handled by the Worker; all normal pages and assets are served from `dist/`.
+
+Before running the Cloudflare preview or deploy scripts, set these shell variables:
+
+```bash
+export URL="https://niktayv.com"
+export TIMEZONE="Pacific/Auckland"
+export TURNSTILE_SITE_KEY="<your-turnstile-site-key>"
+export CONTACT_EMAIL_FROM="contact-form@niktayv.com"
+export CONTACT_EMAIL_TO="yuri.vyatkin@gmail.com"
+```
+
+For staging deploys, change `URL` to the staging `workers.dev` hostname before building.
+
+Preview locally through Wrangler:
+
+```bash
+npm run cf:dev
+```
+
+Deploy the staging Worker:
+
+```bash
+npm run cf:deploy:staging
+```
+
+Deploy production:
+
+```bash
+npm run cf:deploy
+```
+
+Set the Worker secret before previewing or deploying contact-form traffic:
+
+```bash
+npx wrangler secret put TURNSTILE_SECRET_KEY
+```
+
+The `EMAIL` binding in `wrangler.jsonc` also requires Cloudflare Email Service / Email Routing to be enabled for the destination address and sender domain you intend to use.
 
 ## Maintenance Notes
 
 - Tailwind class tokens also live in `src/_data/*.js`, not only in templates, so styling changes should consider both places.
 - Syntax highlighting CSS is kept in `src/assets/css/prism-okaidia.css` and is inlined from the base layout during the Eleventy build.
-- Netlify Forms markup lives in `src/contact.njk`; test it after any contact-form styling or markup changes.
+- `src/contact.njk` depends on the build-time `TURNSTILE_SITE_KEY`, and the Worker in `worker/index.js` depends on the runtime `TURNSTILE_SECRET_KEY` plus the `EMAIL` binding. Test the full contact flow after any form or Worker change.

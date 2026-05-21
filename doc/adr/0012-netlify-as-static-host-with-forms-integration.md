@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Superseded
+
+Superseded by `doc/adr/0016-cloudflare-workers-static-hosting-and-worker-backed-contact-form.md`.
 
 ## Context
 

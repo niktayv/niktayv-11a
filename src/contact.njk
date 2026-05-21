@@ -7,8 +7,8 @@ eleventyNavigation:
   title: Contact  # as it will appear in the nav
   order: 4        # order to display in the nav
 seo:
-  title: Contact Us!
-  description: Use this handy form to contact us. 
+  title: Contact
+  description: Contact details for Yuri Vyatkin.
 ---
 
 <div class="relative bg-white">
@@ -19,9 +19,9 @@ seo:
           Get in touch
         </h2>
         <p class="mt-3 text-lg leading-6 text-gray-500">
-          This contact form is fully functional and will automatically work if you <a href="https://docs.netlify.com/forms/setup/" target="_blank">host on Netlify!</a>
+          The site is currently being migrated to Cloudflare.
           <br><br>
-          The address info below is managed in <code>/src/_data/meta.js</code>.
+          The address info below is managed in <code>src/_data/meta.js</code>.
           <br><br>
           Note the difference in <code>address.phoneDisplay</code> and <code>address.phoneCall</code> to ensure mobile users will be able to correctly dial just by pressing the phone link.
         </p>
@@ -61,44 +61,16 @@ seo:
     </div>
     <div class="px-4 py-16 bg-white sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
       <div class="max-w-lg mx-auto lg:max-w-none">
-        <form name="contact" action="/thankyou" method="POST" data-netlify-recaptcha="true" data-netlify-honeypot="bot-field" data-netlify="true" class="grid grid-cols-1 gap-y-6">
-          <p class="hidden">
-            <label>Don’t fill this out if you're human: <input name="bot-field" /></label>
+        <div class="p-6 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+          <h3 class="text-xl font-semibold text-gray-700">Contact form coming soon</h3>
+          <p class="mt-3 leading-6 text-gray-600">
+            The email form is temporarily unavailable during the hosting migration.
+            Please use the email address or phone number listed on this page in the meantime.
           </p>
-          <div>
-            <label for="full_name" class="sr-only">Full name</label>
-            <div class="relative rounded-md shadow-sm">
-              <input id="full_name" name="name" class="form-input" placeholder="Full name">
-            </div>
-          </div>
-          <div>
-            <label for="email" class="sr-only">Email</label>
-            <div class="relative rounded-md shadow-sm">
-              <input id="email" name="email" type="email" class="form-input" placeholder="Email">
-            </div>
-          </div>
-          <div>
-            <label for="phone" class="sr-only">Phone</label>
-            <div class="relative rounded-md shadow-sm">
-              <input id="phone" name="phone" class="form-input" placeholder="Phone">
-            </div>
-          </div>
-          <div>
-            <label for="message" class="sr-only">Message</label>
-            <div class="relative rounded-md shadow-sm">
-              <textarea id="message" name="message" rows="4" class="form-input" placeholder="Message"></textarea>
-            </div>
-          </div>
-          <div data-netlify-recaptcha="true"></div>
-          <div class="">
-            <span class="inline-flex rounded-md shadow-sm">
-              <button type="submit" class="py-4 px-6 my-4 rounded-lg {{ colors.buttonDefault.text or colors.buttonCustom.text }} hover:{{ colors.buttonDefault.textHover or colors.buttonCustom.textHover }} {{ colors.buttonDefault.bg or colors.buttonCustom.bg }} hover:{{ colors.buttonDefault.bgHover or colors.buttonCustom.bgHover }} {{ colors.buttonDefault.border or colors.buttonCustom.border }}">
-                Submit
-              </button>
-            </span>
-          </div>
-        </form>
-        <div class="p-4 italic text-gray-600 bg-indigo-100 border border-indigo-300 rounded-lg">This form uses the <a class="font-semibold text-indigo-700 underline" href="https://docs.netlify.com/forms/spam-filters/#extra-spam-prevention">basic spam and recaptcha features provided by Netlify</a>. But you could wire in your own form validation if you like. Take a look at <a class="font-semibold text-indigo-700 underline" href="https://github.com/mattkingshott/iodine">Iodine.js</a> if you don't already have a favorite form validator.</div>
+          <p class="mt-4 leading-6 text-gray-600">
+            Once the Phase 2 Worker-based contact flow is ready, this page will regain a direct message form.
+          </p>
+        </div>
       </div>
     </div>
   </div>

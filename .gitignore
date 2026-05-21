@@ -99,6 +99,7 @@ dist
 
 # Serverless directories
 .serverless/
+.wrangler/
 
 # FuseBox cache
 .fusebox/
@@ -111,4 +112,3 @@ dist
 
 # Lean-CTX
 .lean-ctx
-

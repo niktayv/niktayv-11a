@@ -9,4 +9,5 @@ module.exports = {
   timestamp: new Date(),
   timezone: process.env.TIMEZONE || 'UTC',
   url: process.env.URL || 'http://localhost:8080',
+  turnstileSiteKey: process.env.TURNSTILE_SITE_KEY || '',
 };
