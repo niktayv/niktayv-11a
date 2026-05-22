@@ -48,29 +48,66 @@ Cloudflare Workers is the deployment target.
 - `wrangler.jsonc` points Workers Static Assets at `dist/` and binds the Worker entrypoint at `worker/index.js`.
 - `POST /api/contact` is handled by the Worker; all normal pages and assets are served from `dist/`.
 
-For local preview, put your Cloudflare build and Worker values in `.dev.vars`:
+This repo now uses the `.env*` file family for build inputs and `APP_ENV` to choose which env file set should be loaded.
+
+Use:
+
+- `.env.local` for local preview and test keys
+- `.env.production.local` for production build inputs
+
+Start by copying the committed templates:
 
 ```bash
-URL="https://niktayv.com"
+cp .env.local.example .env.local
+cp .env.production.local.example .env.production.local
+```
+
+Example local env file:
+
+```bash
+URL="https://niktayv.test"
 TIMEZONE="Pacific/Auckland"
-TURNSTILE_SITE_KEY="<your-turnstile-site-key>"
-CONTACT_EMAIL_FROM="contact-form@niktayv.com"
+TURNSTILE_SECRET_KEY="1x0000000000000000000000000000000AA"
+TURNSTILE_SITE_KEY="1x00000000000000000000AA"
+CONTACT_EMAIL_FROM="no-reply@niktayv.com"
 CONTACT_EMAIL_TO="contact-form@niktayv.com"
 ```
 
-`npm run cf:build` and `wrangler dev` both load `.dev.vars` locally. For production deploys, set the corresponding runtime vars and secrets in Cloudflare.
+Run the local Cloudflare workflow with:
+
+```bash
+APP_ENV=local npm run cf:build
+APP_ENV=local npm run cf:dev
+```
+
+`APP_ENV` defaults to `local`, so `npm run cf:build` and `npm run cf:dev` use the local env files even when the prefix is omitted.
+
+Run the production build and deploy workflow with:
+
+```bash
+APP_ENV=production npm run cf:build
+APP_ENV=production npm run cf:deploy
+```
+
+Important:
+
+- do not keep legacy `.dev.vars*` files in the repo root
+- Wrangler prefers `.dev.vars*` over `.env*`, so stale `.dev.vars` files will override this workflow
+- `TURNSTILE_SECRET_KEY` stays a real Cloudflare Worker secret for deployed traffic
 
 Preview locally through Wrangler:
 
 ```bash
-npm run cf:dev
+APP_ENV=local npm run cf:dev
 ```
 
 Deploy production:
 
 ```bash
-npm run cf:deploy
+APP_ENV=production npm run cf:deploy
 ```
+
+For the full manual production runbook and post-deploy checklist, see `doc/deploy/DEPLOYMENT.md`.
 
 For deployed contact-form traffic, set the Worker secret in Cloudflare:
 

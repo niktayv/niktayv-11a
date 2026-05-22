@@ -1,6 +1,20 @@
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
+
 require('./load-cloudflare-local-env');
+
+const appEnv = process.env.APP_ENV || 'local';
+const requiredEnvFile =
+  appEnv === 'local' ? '.env.local' : `.env.${appEnv}.local`;
+
+if (!fs.existsSync(path.resolve(process.cwd(), requiredEnvFile))) {
+  console.error(
+    `Missing required environment file for APP_ENV=${appEnv}: ${requiredEnvFile}`
+  );
+  process.exit(1);
+}
 
 const requiredVars = [
   'URL',
@@ -19,7 +33,7 @@ if (missingVars.length > 0) {
     `Missing required Cloudflare build variables: ${missingVars.join(', ')}`
   );
   console.error(
-    'Set them in your shell or in .dev.vars before running the Cloudflare preview or deploy scripts.'
+    `Set them in your shell or in ${requiredEnvFile} before running the Cloudflare preview or deploy scripts.`
   );
   process.exit(1);
 }

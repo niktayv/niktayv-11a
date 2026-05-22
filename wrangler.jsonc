@@ -27,6 +27,11 @@
       "remote": true
     }
   ],
+  "secrets": {
+    "required": [
+      "TURNSTILE_SECRET_KEY"
+    ]
+  },
   "observability": {
     "enabled": true
   }
