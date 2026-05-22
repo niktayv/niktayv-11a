@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('../../scripts/load-cloudflare-local-env');
 
 /**
  * Setup a current env and timestamp with timezone support

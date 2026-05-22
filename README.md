@@ -48,28 +48,22 @@ Cloudflare Workers is the deployment target.
 - `wrangler.jsonc` points Workers Static Assets at `dist/` and binds the Worker entrypoint at `worker/index.js`.
 - `POST /api/contact` is handled by the Worker; all normal pages and assets are served from `dist/`.
 
-Before running the Cloudflare preview or deploy scripts, set these shell variables:
+For local preview, put your Cloudflare build and Worker values in `.dev.vars`:
 
 ```bash
-export URL="https://niktayv.com"
-export TIMEZONE="Pacific/Auckland"
-export TURNSTILE_SITE_KEY="<your-turnstile-site-key>"
-export CONTACT_EMAIL_FROM="contact-form@niktayv.com"
-export CONTACT_EMAIL_TO="yuri.vyatkin@gmail.com"
+URL="https://niktayv.com"
+TIMEZONE="Pacific/Auckland"
+TURNSTILE_SITE_KEY="<your-turnstile-site-key>"
+CONTACT_EMAIL_FROM="contact-form@niktayv.com"
+CONTACT_EMAIL_TO="contact-form@niktayv.com"
 ```
 
-For staging deploys, change `URL` to the staging `workers.dev` hostname before building.
+`npm run cf:build` and `wrangler dev` both load `.dev.vars` locally. For production deploys, set the corresponding runtime vars and secrets in Cloudflare.
 
 Preview locally through Wrangler:
 
 ```bash
 npm run cf:dev
-```
-
-Deploy the staging Worker:
-
-```bash
-npm run cf:deploy:staging
 ```
 
 Deploy production:
@@ -78,13 +72,22 @@ Deploy production:
 npm run cf:deploy
 ```
 
-Set the Worker secret before previewing or deploying contact-form traffic:
+For deployed contact-form traffic, set the Worker secret in Cloudflare:
 
 ```bash
 npx wrangler secret put TURNSTILE_SECRET_KEY
 ```
 
-The `EMAIL` binding in `wrangler.jsonc` also requires Cloudflare Email Service / Email Routing to be enabled for the destination address and sender domain you intend to use.
+Turnstile provisioning requirements:
+
+- Create or reuse a Turnstile widget for `niktayv.com`.
+- Add `www.niktayv.com` too if that hostname may serve the contact page.
+- Use the widget `sitekey` as `TURNSTILE_SITE_KEY`.
+- Store the widget secret with `wrangler secret put TURNSTILE_SECRET_KEY`.
+
+The `EMAIL` binding in `wrangler.jsonc` requires:
+- Cloudflare Email Service / Email Sending to be enabled for the domain.
+- A verified sender that matches `CONTACT_EMAIL_FROM`.
 
 ## Maintenance Notes
 

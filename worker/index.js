@@ -1,6 +1,20 @@
 'use strict';
 
 const MAX_FIELD_LENGTH = 4000;
+const TURNSTILE_ACTION = 'contact';
+const ALLOWED_TURNSTILE_HOSTNAMES = new Set(['niktayv.com', 'www.niktayv.com']);
+const TURNSTILE_TEST_SITE_KEYS = new Set([
+  '1x00000000000000000000AA',
+  '2x00000000000000000000AB',
+  '1x00000000000000000000BB',
+  '2x00000000000000000000BB',
+  '3x00000000000000000000FF',
+]);
+const TURNSTILE_TEST_SECRET_KEYS = new Set([
+  '1x0000000000000000000000000000000AA',
+  '2x0000000000000000000000000000000AA',
+  '3x0000000000000000000000000000000AA',
+]);
 
 function redirect(pathname, status = 303) {
   return new Response(null, {
@@ -23,13 +37,23 @@ function getRemoteIp(request) {
   return request.headers.get('CF-Connecting-IP') || undefined;
 }
 
+function isTurnstileTestMode(env) {
+  return (
+    TURNSTILE_TEST_SITE_KEYS.has(env.TURNSTILE_SITE_KEY) ||
+    TURNSTILE_TEST_SECRET_KEYS.has(env.TURNSTILE_SECRET_KEY)
+  );
+}
+
 function normalizeField(value) {
   return String(value || '').trim().slice(0, MAX_FIELD_LENGTH);
 }
 
 async function verifyTurnstile(request, env, token) {
   if (!token) {
-    return false;
+    return {
+      success: false,
+      reason: 'missing-token',
+    };
   }
 
   if (!env.TURNSTILE_SECRET_KEY) {
@@ -61,7 +85,45 @@ async function verifyTurnstile(request, env, token) {
   }
 
   const result = await response.json();
-  return Boolean(result.success);
+
+  if (!result.success) {
+    return {
+      success: false,
+      reason: 'siteverify-failed',
+      result,
+    };
+  }
+
+  const isTestMode = isTurnstileTestMode(env);
+
+  if (!isTestMode && !ALLOWED_TURNSTILE_HOSTNAMES.has(result.hostname)) {
+    return {
+      success: false,
+      reason: 'hostname-mismatch',
+      result,
+    };
+  }
+
+  if (!isTestMode && !result.action) {
+    return {
+      success: false,
+      reason: 'missing-action',
+      result,
+    };
+  }
+
+  if (!isTestMode && result.action !== TURNSTILE_ACTION) {
+    return {
+      success: false,
+      reason: 'action-mismatch',
+      result,
+    };
+  }
+
+  return {
+    success: true,
+    result,
+  };
 }
 
 function formatTextMessage(fields, request) {
@@ -119,9 +181,15 @@ async function handleContact(request, env) {
   }
 
   const token = normalizeField(formData.get('cf-turnstile-response'));
-  const turnstileOk = await verifyTurnstile(request, env, token);
+  const turnstile = await verifyTurnstile(request, env, token);
 
-  if (!turnstileOk) {
+  if (!turnstile.success) {
+    console.warn('Turnstile validation rejected contact submission', {
+      reason: turnstile.reason,
+      hostname: turnstile.result?.hostname,
+      action: turnstile.result?.action,
+      errors: turnstile.result?.['error-codes'],
+    });
     return redirect('/contact/?status=invalid');
   }
 

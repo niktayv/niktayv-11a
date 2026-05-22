@@ -7,8 +7,8 @@ eleventyNavigation:
   title: Contact  # as it will appear in the nav
   order: 4        # order to display in the nav
 seo:
-  title: Contact
-  description: Contact details for Yuri Vyatkin.
+  title: Contact Us!
+  description: Use this handy form to contact us.
 ---
 
 <div class="relative bg-white">
@@ -19,7 +19,7 @@ seo:
           Get in touch
         </h2>
         <p class="mt-3 text-lg leading-6 text-gray-500">
-          The site is currently being migrated to Cloudflare.
+          This contact form is served as static HTML and submitted to the Cloudflare Worker endpoint at <code>/api/contact</code>.
           <br><br>
           The address info below is managed in <code>src/_data/meta.js</code>.
           <br><br>
@@ -61,17 +61,83 @@ seo:
     </div>
     <div class="px-4 py-16 bg-white sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
       <div class="max-w-lg mx-auto lg:max-w-none">
-        <div class="p-6 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
-          <h3 class="text-xl font-semibold text-gray-700">Contact form coming soon</h3>
-          <p class="mt-3 leading-6 text-gray-600">
-            The email form is temporarily unavailable during the hosting migration.
-            Please use the email address or phone number listed on this page in the meantime.
-          </p>
-          <p class="mt-4 leading-6 text-gray-600">
-            Once the Phase 2 Worker-based contact flow is ready, this page will regain a direct message form.
-          </p>
-        </div>
+        <div id="contact-form-status" class="hidden p-4 mb-6 border rounded-lg" role="status" aria-live="polite"></div>
+        <form name="contact" action="/api/contact" method="POST" class="grid grid-cols-1 gap-y-6">
+          <div>
+            <label for="full_name" class="sr-only">Full name</label>
+            <div class="relative rounded-md shadow-sm">
+              <input id="full_name" name="name" class="form-input" placeholder="Full name" required>
+            </div>
+          </div>
+          <div>
+            <label for="email" class="sr-only">Email</label>
+            <div class="relative rounded-md shadow-sm">
+              <input id="email" name="email" type="email" class="form-input" placeholder="Email" required>
+            </div>
+          </div>
+          <div>
+            <label for="phone" class="sr-only">Phone</label>
+            <div class="relative rounded-md shadow-sm">
+              <input id="phone" name="phone" class="form-input" placeholder="Phone">
+            </div>
+          </div>
+          <div>
+            <label for="message" class="sr-only">Message</label>
+            <div class="relative rounded-md shadow-sm">
+              <textarea id="message" name="message" rows="4" class="form-input" placeholder="Message" required></textarea>
+            </div>
+          </div>
+          {% if build.turnstileSiteKey %}
+          <div class="cf-turnstile" data-sitekey="{{ build.turnstileSiteKey }}" data-action="contact"></div>
+          {% else %}
+          <div class="p-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg">
+            Turnstile is not configured for this build. Set <code>TURNSTILE_SITE_KEY</code> before running the Cloudflare preview or deploy scripts.
+          </div>
+          {% endif %}
+          <div>
+            <span class="inline-flex rounded-md shadow-sm">
+              <button type="submit" class="py-4 px-6 my-4 rounded-lg {{ colors.buttonDefault.text or colors.buttonCustom.text }} hover:{{ colors.buttonDefault.textHover or colors.buttonCustom.textHover }} {{ colors.buttonDefault.bg or colors.buttonCustom.bg }} hover:{{ colors.buttonDefault.bgHover or colors.buttonCustom.bgHover }} {{ colors.buttonDefault.border or colors.buttonCustom.border }}">
+                Submit
+              </button>
+            </span>
+          </div>
+        </form>
+        <div class="p-4 italic text-gray-600 bg-indigo-100 border border-indigo-300 rounded-lg">Submissions are protected by Cloudflare Turnstile and delivered by the Worker configured in <code>worker/index.js</code>. Keep the build environment and Worker bindings aligned before testing this page.</div>
       </div>
     </div>
   </div>
 </div>
+
+{% if build.turnstileSiteKey %}
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endif %}
+<script>
+  (() => {
+    const statusBanner = document.getElementById('contact-form-status');
+    if (!statusBanner) {
+      return;
+    }
+
+    const status = new URLSearchParams(window.location.search).get('status');
+    if (!status) {
+      return;
+    }
+
+    const messages = {
+      invalid: 'Please complete the Turnstile check again and resubmit the form.',
+      error: 'We could not send your message. Please try again in a moment.',
+      success: 'Your message was sent successfully.',
+    };
+
+    const toneClasses = {
+      invalid: ['text-red-700', 'bg-red-50', 'border-red-200'],
+      error: ['text-red-700', 'bg-red-50', 'border-red-200'],
+      success: ['text-green-700', 'bg-green-50', 'border-green-200'],
+    };
+
+    const nextTone = toneClasses[status] || toneClasses.error;
+    statusBanner.classList.add(...nextTone);
+    statusBanner.textContent = messages[status] || messages.error;
+    statusBanner.classList.remove('hidden');
+  })();
+</script>

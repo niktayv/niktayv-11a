@@ -1,3 +1,5 @@
+require('../../scripts/load-cloudflare-local-env');
+
 module.exports = {
   siteURL: process.env.URL || 'http://localhost:8080',
   siteName: 'Yuri Vyatkin | Personal Website',

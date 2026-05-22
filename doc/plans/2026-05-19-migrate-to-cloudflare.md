@@ -29,7 +29,6 @@ Move the site from Netlify to Cloudflare Workers Static Assets, keep the Elevent
   - `npm run cf:check-env`
   - `npm run cf:build`
   - `npm run cf:dev`
-  - `npm run cf:deploy:staging`
   - `npm run cf:deploy`
 - Required configuration
   - Build-time shell variables: `URL`, `TIMEZONE`, `TURNSTILE_SITE_KEY`, `CONTACT_EMAIL_FROM`, `CONTACT_EMAIL_TO`
@@ -46,10 +45,6 @@ Move the site from Netlify to Cloudflare Workers Static Assets, keep the Elevent
   - Run `npm run cf:dev`
   - Verify `GET /`, a post page, `/feed.xml`, `/contact/`, and a missing path
   - Verify `POST /api/contact` rejects missing or invalid Turnstile tokens
-- Staging verification
-  - Build with the staging `URL`
-  - Run `npm run cf:deploy:staging`
-  - Verify canonical URLs, assets, navigation, form error handling, and email delivery
 - Production cutover
   - Build with `URL=https://niktayv.com`
   - Run `npm run cf:deploy`
@@ -77,3 +72,15 @@ On 2026-05-19, the migration was deliberately split into two delivery phases to 
   - Re-verify the full contact submission flow separately after the static-site cutover is stable.
 
 The current repository state now reflects the Phase 1 cutover path: the public contact page is a temporary static placeholder, while the Worker-based form integration remains deferred until Phase 2.
+
+## Update: Phase 2 Completion
+
+On 2026-05-21, the deferred contact flow was restored on top of the Cloudflare-hosted site.
+
+- Restored the public contact form in `src/contact.njk`.
+- Restored build-time requirements for `TURNSTILE_SITE_KEY`, `CONTACT_EMAIL_FROM`, and `CONTACT_EMAIL_TO`.
+- Restored the `EMAIL` Worker binding in `wrangler.jsonc`.
+- Re-enabled Turnstile validation and outbound email delivery in `worker/index.js`.
+- Tightened Turnstile validation to require the expected hostname and action for the contact form flow.
+
+Operational follow-up remains external to the repository: Cloudflare Turnstile widget provisioning, `TURNSTILE_SECRET_KEY` storage, and Email Service sender/domain setup must remain aligned with the checked-in configuration.

@@ -1,8 +1,13 @@
 'use strict';
 
+require('./load-cloudflare-local-env');
+
 const requiredVars = [
   'URL',
   'TIMEZONE',
+  'TURNSTILE_SITE_KEY',
+  'CONTACT_EMAIL_FROM',
+  'CONTACT_EMAIL_TO',
 ];
 
 const missingVars = requiredVars.filter((name) => {
@@ -14,7 +19,7 @@ if (missingVars.length > 0) {
     `Missing required Cloudflare build variables: ${missingVars.join(', ')}`
   );
   console.error(
-    'Set them in your shell before running the Cloudflare preview or deploy scripts.'
+    'Set them in your shell or in .dev.vars before running the Cloudflare preview or deploy scripts.'
   );
   process.exit(1);
 }

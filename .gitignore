@@ -112,3 +112,6 @@ dist
 
 # Lean-CTX
 .lean-ctx
+
+# Wrangler
+.dev.vars*

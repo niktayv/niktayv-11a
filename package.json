@@ -27,7 +27,6 @@
     "cf:check-env": "node scripts/validate-cloudflare-build-env.js",
     "cf:build": "npm run cf:check-env && npm run build",
     "cf:dev": "npm run cf:build && wrangler dev",
-    "cf:deploy:staging": "npm run cf:build && wrangler deploy --env staging",
     "cf:deploy": "npm run cf:build && wrangler deploy"
   },
   "devDependencies": {
